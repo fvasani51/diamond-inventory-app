@@ -117,7 +117,3 @@ Render free tier sleeps after inactivity — first request after idle may take 3
 - Add role-based UI restrictions (hide Delete buttons for "staff" role)
 - Add PDF/Excel export for reports (use `pdfkit` or `exceljs` on backend)
 - Add QR code generation per diamond (`qrcode` npm package) — matches your Future Scope section
-=======
-# diamond-inventory-app
-Diamond Inventory &amp; Business Management System
->>>>>>> 2ce6429b40bbb78801a602a264e57224c75ded2e

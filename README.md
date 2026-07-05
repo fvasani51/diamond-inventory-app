@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Diamond Inventory & Business Management Web Application
 **Paladiya Brothers — Full Stack Project**
 

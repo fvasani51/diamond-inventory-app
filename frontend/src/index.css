@@ -1,0 +1,324 @@
+/* ============================================================
+   Paladiya Brothers — Diamond Trade Design System
+   Charcoal + antique gold, serif/mono precision typography
+   ============================================================ */
+
+:root {
+  --ink: #1B1C20;
+  --charcoal: #15171B;
+  --charcoal-raised: #1E2126;
+  --charcoal-line: #2B2F36;
+  --ivory: #FAF8F3;
+  --card: #FFFFFF;
+  --line: #E7E1D3;
+  --muted: #78705F;
+  --muted-2: #A79E8C;
+  --gold: #B08D57;
+  --gold-deep: #8F6F42;
+  --gold-tint: #F3EADA;
+  --brick: #A14B3F;
+  --brick-tint: #F5E4E1;
+  --sage: #4B7A5E;
+  --sage-tint: #E4EFE8;
+  --sapphire: #3B5570;
+  --sapphire-tint: #E3EAEF;
+  --amber: #B07F1E;
+  --amber-tint: #F7ECD4;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--ivory);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { text-decoration: none; color: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.01em; }
+
+/* ---------- Layout ---------- */
+.layout { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 240px;
+  background: var(--charcoal);
+  color: #E9E6DE;
+  padding: 28px 18px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.brand-mark { flex-shrink: 0; }
+.brand-text h2 {
+  font-size: 17px;
+  color: #F4F1E8;
+  line-height: 1.1;
+  font-weight: 500;
+}
+.brand-text span {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: var(--charcoal-line);
+  margin: 22px 0 18px;
+}
+
+.sidebar nav { display: flex; flex-direction: column; gap: 2px; }
+.sidebar a {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 6px;
+  margin-bottom: 2px;
+  color: #B7B2A6;
+  font-size: 13.5px;
+  font-weight: 500;
+  border-left: 2px solid transparent;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.sidebar a:hover { background: var(--charcoal-raised); color: #F4F1E8; }
+.sidebar a.active {
+  background: var(--charcoal-raised);
+  color: #F4F1E8;
+  border-left: 2px solid var(--gold);
+}
+
+.sidebar-spacer { flex: 1; }
+
+.sidebar button {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--charcoal-line);
+  background: transparent;
+  color: #B7B2A6;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.sidebar button:hover { border-color: var(--brick); color: #E8B9B0; }
+
+.main { flex: 1; padding: 30px 36px; max-width: 100%; }
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 26px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.topbar h1 { font-size: 25px; color: var(--ink); }
+
+.user-chip { display: flex; align-items: center; gap: 8px; }
+.user-chip .name { font-size: 13.5px; color: var(--ink); font-weight: 500; }
+.role-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 20px;
+  border: 1px solid var(--gold);
+  color: var(--gold-deep);
+  background: var(--gold-tint);
+}
+
+/* ---------- Stat cards ---------- */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px 20px 18px;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 28px; height: 2px;
+  background: var(--gold);
+}
+.card h3 {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.card .value {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* ---------- Table ---------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+th, td { padding: 13px 15px; text-align: left; font-size: 13.5px; }
+th {
+  background: var(--ivory);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+  border-bottom: 1px solid var(--line);
+}
+td { border-bottom: 1px solid var(--line); color: var(--ink); }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr { transition: background 0.12s ease; }
+tbody tr:hover { background: #FBF7EE; }
+
+/* numeric-looking columns render better in mono; applied via inline style hooks where used */
+.mono { font-family: var(--font-mono); }
+
+/* ---------- Buttons ---------- */
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.btn-primary { background: var(--gold); color: var(--charcoal); }
+.btn-primary:hover { background: var(--gold-deep); color: #fff; }
+.btn-danger { background: var(--brick); color: #fff; }
+.btn-danger:hover { background: #832F26; }
+.btn-secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.btn-secondary:hover { background: var(--ivory); border-color: var(--muted-2); }
+
+/* ---------- Forms ---------- */
+.form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
+input, select {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  width: 100%;
+  font-size: 13.5px;
+  font-family: var(--font-body);
+  background: var(--card);
+  color: var(--ink);
+  transition: border-color 0.15s ease;
+}
+input:focus, select:focus { border-color: var(--gold); outline: none; }
+input::placeholder { color: var(--muted-2); }
+
+.toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; gap: 10px; flex-wrap: wrap; }
+
+/* ---------- Auth pages ---------- */
+.auth-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 20% 20%, #1D2027 0%, transparent 45%),
+    radial-gradient(circle at 80% 80%, #1A1C22 0%, transparent 45%),
+    var(--charcoal);
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+}
+.auth-watermark {
+  position: absolute;
+  right: -60px;
+  bottom: -60px;
+  opacity: 0.35;
+  pointer-events: none;
+}
+.auth-box {
+  background: var(--ivory);
+  padding: 40px 38px;
+  border-radius: 14px;
+  width: 380px;
+  max-width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  position: relative;
+  z-index: 1;
+  border-top: 3px solid var(--gold);
+}
+.auth-box h2 { font-size: 24px; margin-bottom: 6px; color: var(--ink); }
+.auth-box p {
+  color: var(--muted);
+  margin-bottom: 24px;
+  font-size: 12.5px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+.auth-box input { margin-bottom: 12px; }
+.auth-box .btn-primary { margin-top: 4px; }
+.auth-box a { color: var(--gold-deep); font-weight: 600; }
+
+.error {
+  color: #832F26;
+  background: var(--brick-tint);
+  padding: 9px 12px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  margin-bottom: 14px;
+}
+
+/* ---------- Badges ---------- */
+.badge {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.badge-pending { background: var(--amber-tint); color: var(--amber); }
+.badge-paid { background: var(--sage-tint); color: var(--sage); }
+.badge-delivered { background: var(--sapphire-tint); color: var(--sapphire); }
+
+/* ---------- Empty state ---------- */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--muted);
+  font-size: 13.5px;
+}

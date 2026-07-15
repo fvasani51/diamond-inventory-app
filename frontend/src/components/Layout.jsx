@@ -50,7 +50,9 @@ export default function Layout({ children }) {
             {user?.role && <span className="role-badge">{user.role}</span>}
           </div>
         </div>
-        {children}
+        <div key={location.pathname} className="page-fade">
+          {children}
+        </div>
       </div>
     </div>
   );

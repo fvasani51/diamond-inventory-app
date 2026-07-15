@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import api from "../api/axios";
+import CountUp from "../components/CountUp";
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
@@ -23,7 +24,17 @@ export default function Dashboard() {
     window.URL.revokeObjectURL(blobUrl);
   };
 
-  if (!stats) return <Layout><p>Loading...</p></Layout>;
+  if (!stats) {
+    return (
+      <Layout>
+        <div className="skeleton-grid">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="skeleton-card" style={{ animationDelay: `${i * 0.05}s` }} />
+          ))}
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -41,27 +52,27 @@ export default function Dashboard() {
       <div className="card-grid">
         <div className="card">
           <h3>Total Stock Value</h3>
-          <div className="value">₹{stats.totalStockValue.toLocaleString()}</div>
+          <div className="value"><CountUp value={stats.totalStockValue} format={(n) => `₹${n.toLocaleString()}`} /></div>
         </div>
         <div className="card">
           <h3>Diamonds in Stock</h3>
-          <div className="value">{stats.totalDiamonds}</div>
+          <div className="value"><CountUp value={stats.totalDiamonds} /></div>
         </div>
         <div className="card">
           <h3>Total Orders</h3>
-          <div className="value">{stats.totalOrders}</div>
+          <div className="value"><CountUp value={stats.totalOrders} /></div>
         </div>
         <div className="card">
           <h3>Pending Orders</h3>
-          <div className="value">{stats.pendingOrders}</div>
+          <div className="value"><CountUp value={stats.pendingOrders} /></div>
         </div>
         <div className="card">
           <h3>Total Sales</h3>
-          <div className="value">₹{stats.totalSales.toLocaleString()}</div>
+          <div className="value"><CountUp value={stats.totalSales} format={(n) => `₹${n.toLocaleString()}`} /></div>
         </div>
         <div className="card">
           <h3>Amount Collected</h3>
-          <div className="value">₹{stats.paidAmount.toLocaleString()}</div>
+          <div className="value"><CountUp value={stats.paidAmount} format={(n) => `₹${n.toLocaleString()}`} /></div>
         </div>
       </div>
     </Layout>

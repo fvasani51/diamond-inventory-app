@@ -5,6 +5,54 @@
 
 .lp { background: var(--ivory); color: var(--ink); overflow-x: hidden; }
 
+/* ---------- Animation keyframes ---------- */
+@keyframes lpFadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes lpFloat {
+  0%, 100% { transform: translateY(-50%) translateY(0); }
+  50% { transform: translateY(-50%) translateY(-14px); }
+}
+@keyframes lpSpinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp *, .lp *::before, .lp *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Scroll reveal ---------- */
+.lp-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lp-reveal.is-visible { opacity: 1; transform: translateY(0); }
+.lp-reveal-stagger.is-visible .lp-card:nth-child(1) { transition-delay: 0.02s; }
+.lp-reveal-stagger.is-visible .lp-card:nth-child(2) { transition-delay: 0.12s; }
+.lp-reveal-stagger.is-visible .lp-card:nth-child(3) { transition-delay: 0.22s; }
+.lp-reveal-stagger .lp-card {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.lp-reveal-stagger.is-visible .lp-card { opacity: 1; transform: translateY(0); }
+
+.lp-trust-inner.lp-reveal-stagger .lp-trust-item {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.lp-trust-inner.lp-reveal-stagger.is-visible .lp-trust-item { opacity: 1; transform: translateY(0); }
+.lp-trust-inner.is-visible .lp-trust-item:nth-child(1) { transition-delay: 0.02s; }
+.lp-trust-inner.is-visible .lp-trust-item:nth-child(2) { transition-delay: 0.1s; }
+.lp-trust-inner.is-visible .lp-trust-item:nth-child(3) { transition-delay: 0.18s; }
+.lp-trust-inner.is-visible .lp-trust-item:nth-child(4) { transition-delay: 0.26s; }
+
 .lp-nav {
   position: sticky;
   top: 0;
@@ -22,13 +70,24 @@
 .lp-nav .brand-text span { color: var(--gold); }
 .lp-nav-links { display: flex; align-items: center; gap: 28px; }
 .lp-nav-links a {
+  position: relative;
   color: #B7B2A6;
   font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.02em;
   transition: color 0.15s ease;
+  padding-bottom: 3px;
+}
+.lp-nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 0; height: 1px;
+  background: var(--gold);
+  transition: width 0.25s ease;
 }
 .lp-nav-links a:hover { color: #F4F1E8; }
+.lp-nav-links a:hover::after { width: 100%; }
 .lp-nav .btn-ghost {
   padding: 8px 18px;
   border: 1px solid var(--gold);
@@ -61,8 +120,17 @@
   transform: translateY(-50%);
   opacity: 0.55;
   pointer-events: none;
+  animation: lpFloat 7s ease-in-out infinite;
+  transform-origin: center;
 }
 .lp-hero-inner { position: relative; z-index: 1; max-width: 640px; }
+.lp-hero-inner > * { animation: lpFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.lp-hero-inner > .lp-eyebrow { animation-delay: 0.05s; }
+.lp-hero-inner > h1 { animation-delay: 0.16s; }
+.lp-hero-inner > p.lead { animation-delay: 0.28s; }
+.lp-hero-inner > .lp-hero-ctas { animation-delay: 0.4s; }
+.lp-hero-inner > .lp-stats { animation-delay: 0.52s; }
+
 .lp-eyebrow {
   font-family: var(--font-mono);
   font-size: 11px;
@@ -102,9 +170,10 @@
   font-weight: 700;
   border: none;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.2s ease;
 }
-.lp-btn-primary:hover { background: #C39F68; }
+.lp-btn-primary:hover { background: #C39F68; transform: translateY(-2px); box-shadow: 0 10px 22px rgba(176, 141, 87, 0.3); }
+.lp-btn-primary:active { transform: translateY(0); }
 .lp-btn-secondary {
   padding: 13px 26px;
   background: transparent;
@@ -114,9 +183,10 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, transform 0.15s ease;
 }
-.lp-btn-secondary:hover { border-color: var(--gold); }
+.lp-btn-secondary:hover { border-color: var(--gold); transform: translateY(-2px); }
+.lp-btn-secondary:active { transform: translateY(0); }
 
 .lp-stats { display: flex; gap: 44px; flex-wrap: wrap; }
 .lp-stat .num {

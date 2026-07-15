@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import useReveal from "../components/useReveal";
 import "./Landing.css";
 
 function FacetMark({ size = 28 }) {
@@ -11,6 +12,12 @@ function FacetMark({ size = 28 }) {
 }
 
 export default function Landing() {
+  const [aboutRef, aboutVisible] = useReveal();
+  const [expertiseHeadRef, expertiseHeadVisible] = useReveal();
+  const [cardsRef, cardsVisible] = useReveal(0.1);
+  const [trustRef, trustVisible] = useReveal(0.2);
+  const [ctaRef, ctaVisible] = useReveal();
+
   return (
     <div className="lp">
       {/* ---------- Nav ---------- */}
@@ -67,7 +74,7 @@ export default function Landing() {
 
       {/* ---------- About ---------- */}
       <section className="lp-section" id="about">
-        <div className="lp-about">
+        <div ref={aboutRef} className={`lp-about lp-reveal ${aboutVisible ? "is-visible" : ""}`}>
           <div className="lp-about-copy">
             <div className="lp-eyebrow">Our Story</div>
             <h2 style={{ fontFamily: "var(--font-display)", fontSize: "32px", marginBottom: "18px", fontWeight: 600 }}>
@@ -97,12 +104,12 @@ export default function Landing() {
 
       {/* ---------- Expertise ---------- */}
       <section className="lp-section" id="expertise">
-        <div className="lp-section-head">
+        <div ref={expertiseHeadRef} className={`lp-section-head lp-reveal ${expertiseHeadVisible ? "is-visible" : ""}`}>
           <div className="lp-eyebrow">What we do</div>
           <h2>End-to-end diamond trade, under one roof.</h2>
           <p>From sourcing rough stones to shipping certified inventory worldwide, every stage is handled in-house.</p>
         </div>
-        <div className="lp-cards">
+        <div ref={cardsRef} className={`lp-cards lp-reveal-stagger ${cardsVisible ? "is-visible" : ""}`}>
           <div className="lp-card">
             <span className="lp-card-num">01</span>
             <h3>Sourcing</h3>
@@ -123,7 +130,7 @@ export default function Landing() {
 
       {/* ---------- Trust strip ---------- */}
       <section className="lp-trust">
-        <div className="lp-trust-inner">
+        <div ref={trustRef} className={`lp-trust-inner lp-reveal-stagger ${trustVisible ? "is-visible" : ""}`}>
           <div className="lp-trust-item">
             <div className="dot" />
             <p><strong>Since 1997</strong>Nearly three decades of continuous diamond trade.</p>
@@ -144,7 +151,7 @@ export default function Landing() {
       </section>
 
       {/* ---------- CTA ---------- */}
-      <section className="lp-cta">
+      <section ref={ctaRef} className={`lp-cta lp-reveal ${ctaVisible ? "is-visible" : ""}`}>
         <h2>Manage the business behind the trade.</h2>
         <p>Staff and admin access to inventory, orders, and customer records.</p>
         <Link to="/login"><button className="lp-btn-primary">Go to Dashboard</button></Link>

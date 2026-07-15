@@ -34,8 +34,8 @@
 
 /* ---------- Motion tokens & keyframes ---------- */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(38px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 @keyframes fadeIn {
   from { opacity: 0; }
@@ -89,7 +89,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 600; letter-spacing:
 
 .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .brand-mark { flex-shrink: 0; transition: transform 0.4s ease; }
-.brand:hover .brand-mark { transform: rotate(8deg) scale(1.06); }
+.brand:hover .brand-mark { transform: rotate(18deg) scale(1.15); }
 .brand-text h2 {
   font-size: 17px;
   color: #F4F1E8;
@@ -124,7 +124,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 600; letter-spacing:
   border-left: 2px solid transparent;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
-.sidebar a:hover { background: var(--charcoal-raised); color: #F4F1E8; transform: translateX(3px); }
+.sidebar a:hover { background: var(--charcoal-raised); color: #F4F1E8; transform: translateX(7px); }
 .sidebar a.active {
   background: var(--charcoal-raised);
   color: #F4F1E8;
@@ -190,29 +190,29 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 600; letter-spacing:
   padding: 20px 20px 18px;
   position: relative;
   overflow: hidden;
-  animation: fadeInUp 0.5s ease both;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  animation: fadeInUp 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, border-color 0.2s ease;
 }
 .card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 28px rgba(27, 28, 32, 0.08);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(27, 28, 32, 0.14);
   border-color: var(--gold);
 }
 .card-grid .card:nth-child(1) { animation-delay: 0.02s; }
-.card-grid .card:nth-child(2) { animation-delay: 0.08s; }
-.card-grid .card:nth-child(3) { animation-delay: 0.14s; }
-.card-grid .card:nth-child(4) { animation-delay: 0.20s; }
-.card-grid .card:nth-child(5) { animation-delay: 0.26s; }
-.card-grid .card:nth-child(6) { animation-delay: 0.32s; }
+.card-grid .card:nth-child(2) { animation-delay: 0.1s; }
+.card-grid .card:nth-child(3) { animation-delay: 0.18s; }
+.card-grid .card:nth-child(4) { animation-delay: 0.26s; }
+.card-grid .card:nth-child(5) { animation-delay: 0.34s; }
+.card-grid .card:nth-child(6) { animation-delay: 0.42s; }
 .card::before {
   content: "";
   position: absolute;
   top: 0; left: 0;
   width: 28px; height: 2px;
   background: var(--gold);
-  transition: width 0.25s ease;
+  transition: width 0.3s ease;
 }
-.card:hover::before { width: 100%; opacity: 0.35; }
+.card:hover::before { width: 100%; opacity: 0.4; }
 .card h3 {
   font-family: var(--font-mono);
   font-size: 10.5px;
@@ -255,7 +255,9 @@ tbody tr {
   transition: background 0.12s ease;
   animation: fadeIn 0.35s ease both;
 }
-tbody tr:hover { background: #FBF7EE; }
+tbody tr:hover { background: #FBF0D8; }
+tbody tr { transition: background 0.12s ease, transform 0.12s ease; }
+tbody tr:hover td:first-child { border-left: 2px solid var(--gold); }
 tbody tr:nth-child(1) { animation-delay: 0.02s; }
 tbody tr:nth-child(2) { animation-delay: 0.05s; }
 tbody tr:nth-child(3) { animation-delay: 0.08s; }
@@ -277,12 +279,12 @@ tbody tr:nth-child(n+6) { animation-delay: 0.16s; }
   font-family: var(--font-body);
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease;
 }
-.btn:hover { transform: translateY(-1px); }
-.btn:active { transform: translateY(0); }
+.btn:hover { transform: translateY(-3px) scale(1.03); }
+.btn:active { transform: translateY(-1px) scale(1); }
 .btn-primary { background: var(--gold); color: var(--charcoal); }
-.btn-primary:hover { background: var(--gold-deep); color: #fff; box-shadow: 0 8px 18px rgba(176, 141, 87, 0.28); }
+.btn-primary:hover { background: var(--gold-deep); color: #fff; box-shadow: 0 12px 26px rgba(176, 141, 87, 0.4); }
 .btn-danger { background: var(--brick); color: #fff; }
-.btn-danger:hover { background: #832F26; box-shadow: 0 8px 18px rgba(161, 75, 63, 0.25); }
+.btn-danger:hover { background: #832F26; box-shadow: 0 12px 26px rgba(161, 75, 63, 0.35); }
 .btn-secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); }
 .btn-secondary:hover { background: var(--ivory); border-color: var(--muted-2); }
 

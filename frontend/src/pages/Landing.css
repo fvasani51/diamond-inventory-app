@@ -7,12 +7,12 @@
 
 /* ---------- Animation keyframes ---------- */
 @keyframes lpFadeUp {
-  from { opacity: 0; transform: translateY(22px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(46px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 @keyframes lpFloat {
-  0%, 100% { transform: translateY(-50%) translateY(0); }
-  50% { transform: translateY(-50%) translateY(-14px); }
+  0%, 100% { transform: translateY(-50%) translateY(0) rotate(0deg); }
+  50% { transform: translateY(-50%) translateY(-28px) rotate(3deg); }
 }
 @keyframes lpSpinSlow {
   from { transform: rotate(0deg); }
@@ -28,8 +28,8 @@
 /* ---------- Scroll reveal ---------- */
 .lp-reveal {
   opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(56px) scale(0.97);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .lp-reveal.is-visible { opacity: 1; transform: translateY(0); }
 .lp-reveal-stagger.is-visible .lp-card:nth-child(1) { transition-delay: 0.02s; }
@@ -37,15 +37,15 @@
 .lp-reveal-stagger.is-visible .lp-card:nth-child(3) { transition-delay: 0.22s; }
 .lp-reveal-stagger .lp-card {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease;
+  transform: translateY(48px) scale(0.95);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.25s ease;
 }
 .lp-reveal-stagger.is-visible .lp-card { opacity: 1; transform: translateY(0); }
 
 .lp-trust-inner.lp-reveal-stagger .lp-trust-item {
   opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.55s ease, transform 0.55s ease;
+  transform: translateY(32px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
 }
 .lp-trust-inner.lp-reveal-stagger.is-visible .lp-trust-item { opacity: 1; transform: translateY(0); }
 .lp-trust-inner.is-visible .lp-trust-item:nth-child(1) { transition-delay: 0.02s; }
@@ -172,7 +172,7 @@
   cursor: pointer;
   transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.2s ease;
 }
-.lp-btn-primary:hover { background: #C39F68; transform: translateY(-2px); box-shadow: 0 10px 22px rgba(176, 141, 87, 0.3); }
+.lp-btn-primary:hover { background: #C39F68; transform: translateY(-5px) scale(1.04); box-shadow: 0 16px 32px rgba(176, 141, 87, 0.42); }
 .lp-btn-primary:active { transform: translateY(0); }
 .lp-btn-secondary {
   padding: 13px 26px;
@@ -185,7 +185,7 @@
   cursor: pointer;
   transition: border-color 0.15s ease, transform 0.15s ease;
 }
-.lp-btn-secondary:hover { border-color: var(--gold); transform: translateY(-2px); }
+.lp-btn-secondary:hover { border-color: var(--gold); transform: translateY(-5px) scale(1.04); }
 .lp-btn-secondary:active { transform: translateY(0); }
 
 .lp-stats { display: flex; gap: 44px; flex-wrap: wrap; }
@@ -274,7 +274,7 @@
   overflow: hidden;
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
-.lp-card:hover { border-color: var(--gold); transform: translateY(-3px); }
+.lp-card:hover { border-color: var(--gold); transform: translateY(-10px) scale(1.03); box-shadow: 0 24px 48px rgba(21,23,27,0.14); }
 .lp-card::before {
   content: "";
   position: absolute;

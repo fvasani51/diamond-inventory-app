@@ -7,12 +7,13 @@
 
 /* ---------- Animation keyframes ---------- */
 @keyframes lpFadeUp {
-  from { opacity: 0; transform: translateY(46px) scale(0.96); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  0% { opacity: 0; transform: translateY(80px) scale(0.9); }
+  70% { opacity: 1; transform: translateY(-8px) scale(1.015); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 @keyframes lpFloat {
   0%, 100% { transform: translateY(-50%) translateY(0) rotate(0deg); }
-  50% { transform: translateY(-50%) translateY(-28px) rotate(3deg); }
+  50% { transform: translateY(-50%) translateY(-40px) rotate(6deg); }
 }
 @keyframes lpSpinSlow {
   from { transform: rotate(0deg); }
@@ -28,30 +29,30 @@
 /* ---------- Scroll reveal ---------- */
 .lp-reveal {
   opacity: 0;
-  transform: translateY(56px) scale(0.97);
-  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(90px) scale(0.94);
+  transition: opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1), transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .lp-reveal.is-visible { opacity: 1; transform: translateY(0); }
-.lp-reveal-stagger.is-visible .lp-card:nth-child(1) { transition-delay: 0.02s; }
-.lp-reveal-stagger.is-visible .lp-card:nth-child(2) { transition-delay: 0.12s; }
-.lp-reveal-stagger.is-visible .lp-card:nth-child(3) { transition-delay: 0.22s; }
+.lp-reveal-stagger.is-visible .lp-card:nth-child(1) { transition-delay: 0.05s; }
+.lp-reveal-stagger.is-visible .lp-card:nth-child(2) { transition-delay: 0.25s; }
+.lp-reveal-stagger.is-visible .lp-card:nth-child(3) { transition-delay: 0.45s; }
 .lp-reveal-stagger .lp-card {
   opacity: 0;
-  transform: translateY(48px) scale(0.95);
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.25s ease;
+  transform: translateY(80px) scale(0.9);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.3s ease;
 }
 .lp-reveal-stagger.is-visible .lp-card { opacity: 1; transform: translateY(0); }
 
 .lp-trust-inner.lp-reveal-stagger .lp-trust-item {
   opacity: 0;
-  transform: translateY(32px);
-  transition: opacity 0.65s ease, transform 0.65s ease;
+  transform: translateY(56px) scale(0.92);
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .lp-trust-inner.lp-reveal-stagger.is-visible .lp-trust-item { opacity: 1; transform: translateY(0); }
-.lp-trust-inner.is-visible .lp-trust-item:nth-child(1) { transition-delay: 0.02s; }
-.lp-trust-inner.is-visible .lp-trust-item:nth-child(2) { transition-delay: 0.1s; }
-.lp-trust-inner.is-visible .lp-trust-item:nth-child(3) { transition-delay: 0.18s; }
-.lp-trust-inner.is-visible .lp-trust-item:nth-child(4) { transition-delay: 0.26s; }
+.lp-trust-inner.is-visible .lp-trust-item:nth-child(1) { transition-delay: 0.05s; }
+.lp-trust-inner.is-visible .lp-trust-item:nth-child(2) { transition-delay: 0.2s; }
+.lp-trust-inner.is-visible .lp-trust-item:nth-child(3) { transition-delay: 0.35s; }
+.lp-trust-inner.is-visible .lp-trust-item:nth-child(4) { transition-delay: 0.5s; }
 
 .lp-nav {
   position: sticky;
@@ -98,7 +99,8 @@
   background: transparent;
   transition: background 0.15s ease, color 0.15s ease;
 }
-.lp-nav .btn-ghost:hover { background: var(--gold); color: var(--charcoal); }
+.lp-nav .btn-ghost { transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease; }
+.lp-nav .btn-ghost:hover { background: var(--gold); color: var(--charcoal); transform: scale(1.06); }
 
 /* ---------- Hero ---------- */
 .lp-hero {
@@ -120,16 +122,16 @@
   transform: translateY(-50%);
   opacity: 0.55;
   pointer-events: none;
-  animation: lpFloat 7s ease-in-out infinite;
+  animation: lpFloat 4.5s ease-in-out infinite;
   transform-origin: center;
 }
 .lp-hero-inner { position: relative; z-index: 1; max-width: 640px; }
-.lp-hero-inner > * { animation: lpFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.lp-hero-inner > .lp-eyebrow { animation-delay: 0.05s; }
-.lp-hero-inner > h1 { animation-delay: 0.16s; }
-.lp-hero-inner > p.lead { animation-delay: 0.28s; }
-.lp-hero-inner > .lp-hero-ctas { animation-delay: 0.4s; }
-.lp-hero-inner > .lp-stats { animation-delay: 0.52s; }
+.lp-hero-inner > * { animation: lpFadeUp 1.1s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.lp-hero-inner > .lp-eyebrow { animation-delay: 0.1s; }
+.lp-hero-inner > h1 { animation-delay: 0.3s; }
+.lp-hero-inner > p.lead { animation-delay: 0.5s; }
+.lp-hero-inner > .lp-hero-ctas { animation-delay: 0.7s; }
+.lp-hero-inner > .lp-stats { animation-delay: 0.9s; }
 
 .lp-eyebrow {
   font-family: var(--font-mono);
@@ -172,7 +174,8 @@
   cursor: pointer;
   transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.2s ease;
 }
-.lp-btn-primary:hover { background: #C39F68; transform: translateY(-5px) scale(1.04); box-shadow: 0 16px 32px rgba(176, 141, 87, 0.42); }
+.lp-btn-primary { transition: background 0.15s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease; }
+.lp-btn-primary:hover { background: #C39F68; transform: translateY(-7px) scale(1.07); box-shadow: 0 22px 40px rgba(176, 141, 87, 0.5); }
 .lp-btn-primary:active { transform: translateY(0); }
 .lp-btn-secondary {
   padding: 13px 26px;
@@ -185,7 +188,8 @@
   cursor: pointer;
   transition: border-color 0.15s ease, transform 0.15s ease;
 }
-.lp-btn-secondary:hover { border-color: var(--gold); transform: translateY(-5px) scale(1.04); }
+.lp-btn-secondary { transition: border-color 0.15s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
+.lp-btn-secondary:hover { border-color: var(--gold); transform: translateY(-7px) scale(1.07); }
 .lp-btn-secondary:active { transform: translateY(0); }
 
 .lp-stats { display: flex; gap: 44px; flex-wrap: wrap; }
@@ -274,7 +278,8 @@
   overflow: hidden;
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
-.lp-card:hover { border-color: var(--gold); transform: translateY(-10px) scale(1.03); box-shadow: 0 24px 48px rgba(21,23,27,0.14); }
+.lp-card { transition: border-color 0.2s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease; }
+.lp-card:hover { border-color: var(--gold); transform: translateY(-16px) scale(1.05); box-shadow: 0 32px 60px rgba(21,23,27,0.2); }
 .lp-card::before {
   content: "";
   position: absolute;

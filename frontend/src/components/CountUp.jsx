@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
  * Animates a number counting up from 0 to `value` on mount.
  * `format` receives the current (rounded) number and returns the display string.
  */
-export default function CountUp({ value = 0, duration = 1400, format = (n) => n.toLocaleString() }) {
+export default function CountUp({ value = 0, duration = 1800, format = (n) => n.toLocaleString() }) {
   const [display, setDisplay] = useState(0);
   const frameRef = useRef();
 

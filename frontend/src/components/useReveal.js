@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
  * Returns a ref to attach to an element and a boolean that flips to true
  * once the element scrolls into view. Used to trigger CSS reveal animations.
  */
-export default function useReveal(threshold = 0.15) {
+export default function useReveal(threshold = 0.08) {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
 

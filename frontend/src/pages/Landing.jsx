@@ -14,8 +14,8 @@ function FacetMark({ size = 28 }) {
 export default function Landing() {
   const [aboutRef, aboutVisible] = useReveal();
   const [expertiseHeadRef, expertiseHeadVisible] = useReveal();
-  const [cardsRef, cardsVisible] = useReveal(0.1);
-  const [trustRef, trustVisible] = useReveal(0.2);
+  const [cardsRef, cardsVisible] = useReveal(0.05);
+  const [trustRef, trustVisible] = useReveal(0.08);
   const [ctaRef, ctaVisible] = useReveal();
 
   return (

@@ -5,12 +5,26 @@ import CountUp from "../components/CountUp";
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
+  const [insight, setInsight] = useState(null);
+  const [insightLoading, setInsightLoading] = useState(true);
+  const [insightError, setInsightError] = useState(false);
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const isAdmin = user?.role === "admin";
 
   useEffect(() => {
     api.get("/reports/dashboard").then((res) => setStats(res.data)).catch(() => {});
+    fetchInsight();
   }, []);
+
+  const fetchInsight = (refresh = false) => {
+    setInsightLoading(true);
+    setInsightError(false);
+    api
+      .get(`/reports/ai-insights${refresh ? "?refresh=true" : ""}`)
+      .then((res) => setInsight(res.data.insight))
+      .catch(() => setInsightError(true))
+      .finally(() => setInsightLoading(false));
+  };
 
   const downloadFile = async (url, filename) => {
     const res = await api.get(url, { responseType: "blob" });
@@ -38,6 +52,27 @@ export default function Dashboard() {
 
   return (
     <Layout>
+      <div className="ai-insight-card">
+        <div className="ai-insight-head">
+          <span className="ai-badge">✦ AI Insight</span>
+          <button
+            className="ai-refresh-btn"
+            onClick={() => fetchInsight(true)}
+            disabled={insightLoading}
+            title="Refresh insight"
+          >
+            {insightLoading ? "…" : "↻"}
+          </button>
+        </div>
+        {insightLoading ? (
+          <div className="ai-insight-skeleton" />
+        ) : insightError ? (
+          <p className="ai-insight-text ai-insight-error">Couldn't load an insight right now — try refreshing.</p>
+        ) : (
+          <p className="ai-insight-text">{insight}</p>
+        )}
+      </div>
+
       {isAdmin && (
         <div className="toolbar" style={{ marginBottom: 16 }}>
           <button className="btn btn-secondary" onClick={() => downloadFile("/reports/export/pdf", "diamond-business-report.pdf")}>

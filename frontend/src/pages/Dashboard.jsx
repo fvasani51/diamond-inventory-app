@@ -8,12 +8,14 @@ export default function Dashboard() {
   const [insight, setInsight] = useState(null);
   const [insightLoading, setInsightLoading] = useState(true);
   const [insightError, setInsightError] = useState(false);
+  const [lowStock, setLowStock] = useState({ count: 0, items: [] });
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const isAdmin = user?.role === "admin";
 
   useEffect(() => {
     api.get("/reports/dashboard").then((res) => setStats(res.data)).catch(() => {});
     fetchInsight();
+    fetchLowStock();
   }, []);
 
   const fetchInsight = (refresh = false) => {
@@ -24,6 +26,13 @@ export default function Dashboard() {
       .then((res) => setInsight(res.data.insight))
       .catch(() => setInsightError(true))
       .finally(() => setInsightLoading(false));
+  };
+
+  const fetchLowStock = () => {
+    api
+      .get("/inventory/low-stock")
+      .then((res) => setLowStock(res.data))
+      .catch(() => {});
   };
 
   const downloadFile = async (url, filename) => {
@@ -73,6 +82,21 @@ export default function Dashboard() {
         )}
       </div>
 
+      {lowStock.count > 0 && (
+        <div className="low-stock-banner">
+          <span className="low-stock-icon">⚠️</span>
+          <span className="low-stock-text">
+            <strong>{lowStock.count}</strong> diamond{lowStock.count > 1 ? "s are" : " is"} running low on stock
+            (≤ {lowStock.threshold} left):{" "}
+            {lowStock.items
+              .slice(0, 3)
+              .map((d) => `${d.carat}ct ${d.shape}`)
+              .join(", ")}
+            {lowStock.items.length > 3 ? ` +${lowStock.items.length - 3} more` : ""}
+          </span>
+        </div>
+      )}
+
       {isAdmin && (
         <div className="toolbar" style={{ marginBottom: 16 }}>
           <button className="btn btn-secondary" onClick={() => downloadFile("/reports/export/pdf", "diamond-business-report.pdf")}>
@@ -108,6 +132,10 @@ export default function Dashboard() {
         <div className="card">
           <h3>Amount Collected</h3>
           <div className="value"><CountUp value={stats.paidAmount} format={(n) => `₹${n.toLocaleString()}`} /></div>
+        </div>
+        <div className={`card ${lowStock.count > 0 ? "card-alert" : ""}`}>
+          <h3>Low Stock Items</h3>
+          <div className="value"><CountUp value={lowStock.count} /></div>
         </div>
       </div>
     </Layout>

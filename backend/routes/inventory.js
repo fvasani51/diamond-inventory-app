@@ -27,6 +27,25 @@ router.get("/", protect, async (req, res) => {
   }
 });
 
+// Get low-stock diamonds (default threshold = 3)
+// Place this BEFORE "/:id" routes so "low-stock" isn't mistaken for an id.
+router.get("/low-stock", protect, async (req, res) => {
+  try {
+    const threshold = parseInt(req.query.threshold) || 3;
+    const lowStockItems = await Diamond.find({
+      stockQuantity: { $lte: threshold },
+    }).sort({ stockQuantity: 1 });
+
+    res.json({
+      count: lowStockItems.length,
+      threshold,
+      items: lowStockItems,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // Add diamond
 router.post("/", protect, async (req, res) => {
   try {

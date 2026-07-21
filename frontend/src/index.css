@@ -206,6 +206,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 600; letter-spacing:
 .card-grid .card:nth-child(4) { animation-delay: 0.5s; }
 .card-grid .card:nth-child(5) { animation-delay: 0.65s; }
 .card-grid .card:nth-child(6) { animation-delay: 0.8s; }
+.card-grid .card:nth-child(7) { animation-delay: 0.95s; }
 .card::before {
   content: "";
   position: absolute;
@@ -230,6 +231,16 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 600; letter-spacing:
   font-weight: 600;
   color: var(--ink);
 }
+
+/* Low-stock variant of the stat card */
+.card-alert {
+  border-color: var(--brick);
+}
+.card-alert::before {
+  background: var(--brick);
+}
+.card-alert h3 { color: var(--brick); }
+.card-alert .value { color: var(--brick); }
 
 /* ---------- Table ---------- */
 table {
@@ -464,4 +475,29 @@ input::placeholder { color: var(--muted-2); }
   padding: 40px 20px;
   color: var(--muted);
   font-size: 13.5px;
+}
+
+/* ---------- Low Stock banner (Dashboard) ---------- */
+.low-stock-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--amber-tint);
+  border: 1px solid var(--amber);
+  color: #6B4C10;
+  padding: 13px 18px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  animation: fadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.low-stock-icon {
+  font-size: 17px;
+  flex-shrink: 0;
+  animation: pulseSoft 1.8s ease-in-out infinite;
+}
+.low-stock-text strong {
+  font-family: var(--font-mono);
+  color: var(--brick);
 }

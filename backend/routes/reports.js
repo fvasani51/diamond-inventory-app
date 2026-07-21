@@ -187,4 +187,121 @@ router.get("/export/excel", protect, adminOnly, async (req, res) => {
   }
 });
 
+// ---------- Invoice Generator ----------
+// GST rate — India taxes cut & polished diamonds / diamond jewellery at
+// 3% under the current GST schedule (as of this project's build). Rates
+// do change, so double-check the latest rate before relying on this in
+// a real business — update GST_RATE below if it does.
+const GST_RATE = 0.03;
+
+// Generate a PDF invoice for a single order (Admin only)
+router.get("/invoice/:orderId", protect, adminOnly, async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.orderId).populate("diamond");
+    if (!order) return res.status(404).json({ message: "Order not found" });
+
+    const diamond = order.diamond;
+    const subtotal = order.totalAmount;
+    const gstAmount = Math.round(subtotal * GST_RATE * 100) / 100;
+    const grandTotal = Math.round((subtotal + gstAmount) * 100) / 100;
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=invoice-${order._id}.pdf`
+    );
+
+    const doc = new PDFDocument({ margin: 50 });
+    doc.pipe(res);
+
+    // ---- Letterhead ----
+    doc.fontSize(20).fillColor("#1B1C20").text("Paladiya Brothers", { align: "left" });
+    doc.fontSize(9).fillColor("gray").text("Diamond Trade — Bharat Diamond Bourse, Mumbai", { align: "left" });
+    doc.moveDown(0.3);
+    doc
+      .moveTo(50, doc.y + 5)
+      .lineTo(545, doc.y + 5)
+      .strokeColor("#B08D57")
+      .lineWidth(1.5)
+      .stroke();
+    doc.moveDown(1.2);
+
+    // ---- Invoice title + meta ----
+    doc.fontSize(16).fillColor("#1B1C20").text("TAX INVOICE", { align: "right" });
+    doc.fontSize(9).fillColor("gray");
+    doc.text(`Invoice #: ${order._id}`, { align: "right" });
+    doc.text(`Order Date: ${new Date(order.createdAt).toLocaleDateString("en-IN")}`, { align: "right" });
+    doc.text(`Generated: ${new Date().toLocaleString("en-IN")}`, { align: "right" });
+    doc.moveDown(1.5);
+
+    // ---- Bill To ----
+    doc.fontSize(11).fillColor("#1B1C20").text("Bill To:", { underline: true });
+    doc.fontSize(10).fillColor("black");
+    doc.text(order.customerName);
+    doc.text(order.customerPhone);
+    doc.moveDown(1.2);
+
+    // ---- Item table ----
+    const tableTop = doc.y;
+    doc.fontSize(9).fillColor("gray");
+    doc.text("Description", 50, tableTop);
+    doc.text("Qty", 320, tableTop);
+    doc.text("Unit Price", 380, tableTop);
+    doc.text("Amount", 470, tableTop);
+    doc
+      .moveTo(50, tableTop + 15)
+      .lineTo(545, tableTop + 15)
+      .strokeColor("#E7E1D3")
+      .stroke();
+
+    const rowY = tableTop + 25;
+    const description = diamond
+      ? `${diamond.carat}ct ${diamond.cut} ${diamond.color} ${diamond.clarity} ${diamond.shape} diamond`
+      : "Diamond";
+    const unitPrice = diamond ? diamond.price : subtotal / order.quantity;
+
+    doc.fontSize(10).fillColor("black");
+    doc.text(description, 50, rowY, { width: 260 });
+    doc.text(String(order.quantity), 320, rowY);
+    doc.text(`Rs. ${unitPrice.toLocaleString("en-IN")}`, 380, rowY);
+    doc.text(`Rs. ${subtotal.toLocaleString("en-IN")}`, 470, rowY);
+
+    doc.moveDown(3);
+
+    // ---- Totals ----
+    const totalsX = 380;
+    doc.fontSize(10).fillColor("black");
+    doc.text(`Subtotal:`, totalsX, doc.y);
+    doc.text(`Rs. ${subtotal.toLocaleString("en-IN")}`, 470, doc.y - doc.currentLineHeight());
+    doc.text(`GST (${(GST_RATE * 100).toFixed(0)}%):`, totalsX, doc.y);
+    doc.text(`Rs. ${gstAmount.toLocaleString("en-IN")}`, 470, doc.y - doc.currentLineHeight());
+    doc.moveDown(0.3);
+    doc
+      .moveTo(totalsX, doc.y)
+      .lineTo(545, doc.y)
+      .strokeColor("#B08D57")
+      .stroke();
+    doc.moveDown(0.3);
+    doc.fontSize(12).fillColor("#1B1C20").text(`Grand Total:`, totalsX, doc.y);
+    doc.text(`Rs. ${grandTotal.toLocaleString("en-IN")}`, 470, doc.y - doc.currentLineHeight());
+
+    doc.moveDown(2);
+
+    // ---- Status ----
+    doc.fontSize(10).fillColor("gray");
+    doc.text(`Payment Status: ${order.paymentStatus.toUpperCase()}`);
+    doc.text(`Delivery Status: ${order.deliveryStatus.toUpperCase()}`);
+
+    doc.moveDown(2);
+    doc.fontSize(8).fillColor("gray").text(
+      "This is a computer-generated invoice from Paladiya Brothers.",
+      { align: "center" }
+    );
+
+    doc.end();
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;

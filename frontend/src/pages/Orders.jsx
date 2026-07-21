@@ -9,6 +9,7 @@ export default function Orders() {
   const [diamonds, setDiamonds] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(empty);
+  const [invoiceLoadingId, setInvoiceLoadingId] = useState(null);
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const isAdmin = user?.role === "admin";
 
@@ -38,6 +39,25 @@ export default function Orders() {
     if (confirm("Delete this order?")) {
       await api.delete(`/orders/${id}`);
       load();
+    }
+  };
+
+  const downloadInvoice = async (orderId) => {
+    setInvoiceLoadingId(orderId);
+    try {
+      const res = await api.get(`/reports/invoice/${orderId}`, { responseType: "blob" });
+      const blobUrl = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.setAttribute("download", `invoice-${orderId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      alert("Could not generate invoice. Please try again.");
+    } finally {
+      setInvoiceLoadingId(null);
     }
   };
 
@@ -98,7 +118,19 @@ export default function Orders() {
                   <option value="delivered">Delivered</option>
                 </select>
               </td>
-              <td>{isAdmin ? <button className="btn btn-danger" onClick={() => handleDelete(o._id)}>Delete</button> : "—"}</td>
+              <td style={{ display: "flex", gap: 8 }}>
+                {isAdmin && (
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => downloadInvoice(o._id)}
+                    disabled={invoiceLoadingId === o._id}
+                  >
+                    {invoiceLoadingId === o._id ? "…" : "🧾 Invoice"}
+                  </button>
+                )}
+                {isAdmin && <button className="btn btn-danger" onClick={() => handleDelete(o._id)}>Delete</button>}
+                {!isAdmin && "—"}
+              </td>
             </tr>
           ))}
           {orders.length === 0 && <tr><td colSpan="8" style={{ textAlign: "center", padding: 20 }}>No orders yet</td></tr>}

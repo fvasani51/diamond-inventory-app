@@ -3,9 +3,21 @@ const PDFDocument = require("pdfkit");
 const ExcelJS = require("exceljs");
 const Diamond = require("../models/Diamond");
 const Order = require("../models/Order");
+const Activity = require("../models/Activity");
 const { protect, adminOnly } = require("../middleware/auth");
 
 const router = express.Router();
+
+// ---------- Recent Activity ----------
+router.get("/activity", protect, async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10;
+    const activities = await Activity.find().sort({ createdAt: -1 }).limit(limit);
+    res.json(activities);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 router.get("/dashboard", protect, async (req, res) => {
   try {
@@ -32,6 +44,7 @@ router.get("/dashboard", protect, async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
 // ---------- Chart data (sales trend + inventory breakdown) ----------
 router.get("/chart-data", protect, async (req, res) => {
   try {
@@ -65,10 +78,8 @@ router.get("/chart-data", protect, async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
 // ---------- AI Business Insights (Google Gemini) ----------
-// Simple in-memory cache so we don't call the AI API on every dashboard
-// load. Resets when the serverless function cold-starts, which is fine
-// for a "refresh every few minutes" feel.
 let insightsCache = { text: null, generatedAt: null };
 const INSIGHTS_CACHE_MS = 10 * 60 * 1000; // 10 minutes
 
@@ -220,13 +231,8 @@ router.get("/export/excel", protect, adminOnly, async (req, res) => {
 });
 
 // ---------- Invoice Generator ----------
-// GST rate — India taxes cut & polished diamonds / diamond jewellery at
-// 3% under the current GST schedule (as of this project's build). Rates
-// do change, so double-check the latest rate before relying on this in
-// a real business — update GST_RATE below if it does.
 const GST_RATE = 0.03;
 
-// Generate a PDF invoice for a single order (Admin only)
 router.get("/invoice/:orderId", protect, adminOnly, async (req, res) => {
   try {
     const order = await Order.findById(req.params.orderId).populate("diamond");
@@ -246,7 +252,6 @@ router.get("/invoice/:orderId", protect, adminOnly, async (req, res) => {
     const doc = new PDFDocument({ margin: 50 });
     doc.pipe(res);
 
-    // ---- Letterhead ----
     doc.fontSize(20).fillColor("#1B1C20").text("Paladiya Brothers", { align: "left" });
     doc.fontSize(9).fillColor("gray").text("Diamond Trade — Bharat Diamond Bourse, Mumbai", { align: "left" });
     doc.moveDown(0.3);
@@ -258,7 +263,6 @@ router.get("/invoice/:orderId", protect, adminOnly, async (req, res) => {
       .stroke();
     doc.moveDown(1.2);
 
-    // ---- Invoice title + meta ----
     doc.fontSize(16).fillColor("#1B1C20").text("TAX INVOICE", { align: "right" });
     doc.fontSize(9).fillColor("gray");
     doc.text(`Invoice #: ${order._id}`, { align: "right" });
@@ -266,14 +270,12 @@ router.get("/invoice/:orderId", protect, adminOnly, async (req, res) => {
     doc.text(`Generated: ${new Date().toLocaleString("en-IN")}`, { align: "right" });
     doc.moveDown(1.5);
 
-    // ---- Bill To ----
     doc.fontSize(11).fillColor("#1B1C20").text("Bill To:", { underline: true });
     doc.fontSize(10).fillColor("black");
     doc.text(order.customerName);
     doc.text(order.customerPhone);
     doc.moveDown(1.2);
 
-    // ---- Item table ----
     const tableTop = doc.y;
     doc.fontSize(9).fillColor("gray");
     doc.text("Description", 50, tableTop);
@@ -300,7 +302,6 @@ router.get("/invoice/:orderId", protect, adminOnly, async (req, res) => {
 
     doc.moveDown(3);
 
-    // ---- Totals ----
     const totalsX = 380;
     doc.fontSize(10).fillColor("black");
     doc.text(`Subtotal:`, totalsX, doc.y);
@@ -319,7 +320,6 @@ router.get("/invoice/:orderId", protect, adminOnly, async (req, res) => {
 
     doc.moveDown(2);
 
-    // ---- Status ----
     doc.fontSize(10).fillColor("gray");
     doc.text(`Payment Status: ${order.paymentStatus.toUpperCase()}`);
     doc.text(`Delivery Status: ${order.deliveryStatus.toUpperCase()}`);

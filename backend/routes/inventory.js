@@ -1,6 +1,7 @@
 const express = require("express");
 const QRCode = require("qrcode");
 const Diamond = require("../models/Diamond");
+const Activity = require("../models/Activity");
 const { protect, adminOnly } = require("../middleware/auth");
 
 const router = express.Router();
@@ -28,7 +29,6 @@ router.get("/", protect, async (req, res) => {
 });
 
 // Get low-stock diamonds (default threshold = 3)
-// Place this BEFORE "/:id" routes so "low-stock" isn't mistaken for an id.
 router.get("/low-stock", protect, async (req, res) => {
   try {
     const threshold = parseInt(req.query.threshold) || 3;
@@ -50,6 +50,12 @@ router.get("/low-stock", protect, async (req, res) => {
 router.post("/", protect, async (req, res) => {
   try {
     const diamond = await Diamond.create(req.body);
+
+    await Activity.create({
+      type: "diamond_added",
+      message: `New diamond added — ${diamond.carat}ct ${diamond.cut} ${diamond.color} (Stock: ${diamond.stockQuantity})`,
+    });
+
     res.status(201).json(diamond);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -78,9 +84,7 @@ router.delete("/:id", protect, adminOnly, async (req, res) => {
   }
 });
 
-// Get QR code for a diamond (returns base64 PNG data URL)
-// The QR encodes the diamond's key details as JSON so staff can scan
-// and instantly see carat/cut/color/clarity/price without opening the app.
+// Get QR code for a diamond
 router.get("/:id/qrcode", protect, async (req, res) => {
   try {
     const diamond = await Diamond.findById(req.params.id);

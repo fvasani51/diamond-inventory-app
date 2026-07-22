@@ -25,6 +25,7 @@ export default function Dashboard() {
   const [insightError, setInsightError] = useState(false);
   const [lowStock, setLowStock] = useState({ count: 0, items: [] });
   const [chartData, setChartData] = useState({ salesTrend: [], inventoryByCut: [] });
+  const [activity, setActivity] = useState([]);
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const isAdmin = user?.role === "admin";
 
@@ -33,7 +34,25 @@ export default function Dashboard() {
     fetchInsight();
     fetchLowStock();
     fetchChartData();
+    fetchActivity();
   }, []);
+
+  const fetchActivity = () => {
+    api
+      .get("/reports/activity")
+      .then((res) => setActivity(res.data))
+      .catch(() => {});
+  };
+
+  const timeAgo = (dateStr) => {
+    const diffMs = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diffMs / 60000);
+    if (mins < 1) return "just now";
+    if (mins < 60) return `${mins}m ago`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h ago`;
+    return `${Math.floor(hours / 24)}d ago`;
+  };
 
   const fetchInsight = (refresh = false) => {
     setInsightLoading(true);
@@ -207,6 +226,23 @@ export default function Dashboard() {
             </ResponsiveContainer>
           )}
         </div>
+      </div>
+
+      <div className="activity-card">
+        <h3 className="chart-title">Recent Activity</h3>
+        {activity.length === 0 ? (
+          <p className="empty-state">No activity yet</p>
+        ) : (
+          <ul className="activity-list">
+            {activity.map((a) => (
+              <li key={a._id} className="activity-item">
+                <span className={`activity-dot activity-dot-${a.type}`} />
+                <span className="activity-text">{a.message}</span>
+                <span className="activity-time">{timeAgo(a.createdAt)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </Layout>
   );

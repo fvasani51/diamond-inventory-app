@@ -567,3 +567,32 @@ input::placeholder { color: var(--muted-2); }
   transition: border-color 0.15s ease, color 0.15s ease;
 }
 .theme-toggle-btn:hover { border-color: var(--gold); color: var(--gold); }
+/* ---------- Recent Activity feed (Dashboard) ---------- */
+.activity-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px 22px;
+  margin-top: 16px;
+  animation: fadeInUp 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.activity-list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  animation: fadeIn 0.4s ease both;
+}
+.activity-item:last-child { border-bottom: none; }
+.activity-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; background: var(--gold); }
+.activity-dot-order_created { background: var(--sage); }
+.activity-dot-payment_updated { background: var(--amber); }
+.activity-dot-delivery_updated { background: var(--sapphire); }
+.activity-dot-diamond_added { background: var(--gold); }
+.activity-dot-order_deleted { background: var(--brick); }
+.activity-text { flex: 1; color: var(--ink); }
+.activity-time { color: var(--muted-2); font-size: 11.5px; font-family: var(--font-mono); flex-shrink: 0; }
+[data-theme="dark"] .activity-card { background: var(--card); }

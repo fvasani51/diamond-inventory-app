@@ -2,6 +2,7 @@ const express = require("express");
 const Order = require("../models/Order");
 const Diamond = require("../models/Diamond");
 const Customer = require("../models/Customer");
+const Activity = require("../models/Activity");
 const { protect, adminOnly } = require("../middleware/auth");
 
 const router = express.Router();
@@ -39,6 +40,11 @@ router.post("/", protect, async (req, res) => {
       }
     }
 
+    await Activity.create({
+      type: "order_created",
+      message: `New order from ${order.customerName} — ${diamondDoc.carat}ct ${diamondDoc.cut} (₹${order.totalAmount.toLocaleString("en-IN")})`,
+    });
+
     res.status(201).json(order);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -48,8 +54,24 @@ router.post("/", protect, async (req, res) => {
 // Update order status
 router.put("/:id", protect, async (req, res) => {
   try {
+    const previous = await Order.findById(req.params.id);
+    if (!previous) return res.status(404).json({ message: "Order not found" });
+
     const order = await Order.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!order) return res.status(404).json({ message: "Order not found" });
+
+    if (req.body.paymentStatus && req.body.paymentStatus !== previous.paymentStatus) {
+      await Activity.create({
+        type: "payment_updated",
+        message: `Payment for ${order.customerName}'s order marked as ${req.body.paymentStatus}`,
+      });
+    }
+    if (req.body.deliveryStatus && req.body.deliveryStatus !== previous.deliveryStatus) {
+      await Activity.create({
+        type: "delivery_updated",
+        message: `Delivery for ${order.customerName}'s order marked as ${req.body.deliveryStatus}`,
+      });
+    }
+
     res.json(order);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -69,6 +91,12 @@ router.delete("/:id", protect, adminOnly, async (req, res) => {
     }
 
     await Order.findByIdAndDelete(req.params.id);
+
+    await Activity.create({
+      type: "order_deleted",
+      message: `Order from ${order.customerName} was deleted and stock restored`,
+    });
+
     res.json({ message: "Order deleted and stock restored" });
   } catch (err) {
     res.status(500).json({ message: err.message });

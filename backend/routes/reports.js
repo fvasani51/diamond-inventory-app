@@ -32,7 +32,39 @@ router.get("/dashboard", protect, async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+// ---------- Chart data (sales trend + inventory breakdown) ----------
+router.get("/chart-data", protect, async (req, res) => {
+  try {
+    const orders = await Order.find().sort({ createdAt: 1 });
+    const diamonds = await Diamond.find();
 
+    const salesByDate = {};
+    orders.forEach((o) => {
+      const day = new Date(o.createdAt).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+      });
+      salesByDate[day] = (salesByDate[day] || 0) + o.totalAmount;
+    });
+    const salesTrend = Object.entries(salesByDate).map(([date, total]) => ({ date, total }));
+
+    const cutCounts = {};
+    diamonds.forEach((d) => {
+      cutCounts[d.cut] = (cutCounts[d.cut] || 0) + d.stockQuantity;
+    });
+    const inventoryByCut = Object.entries(cutCounts).map(([name, value]) => ({ name, value }));
+
+    const colorCounts = {};
+    diamonds.forEach((d) => {
+      colorCounts[d.color] = (colorCounts[d.color] || 0) + d.stockQuantity;
+    });
+    const inventoryByColor = Object.entries(colorCounts).map(([name, value]) => ({ name, value }));
+
+    res.json({ salesTrend, inventoryByCut, inventoryByColor });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 // ---------- AI Business Insights (Google Gemini) ----------
 // Simple in-memory cache so we don't call the AI API on every dashboard
 // load. Resets when the serverless function cold-starts, which is fine

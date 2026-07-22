@@ -2,6 +2,21 @@ import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import api from "../api/axios";
 import CountUp from "../components/CountUp";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
+
+const PIE_COLORS = ["#B08D57", "#3B5570", "#4B7A5E", "#A14B3F", "#B07F1E", "#78705F"];
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
@@ -9,6 +24,7 @@ export default function Dashboard() {
   const [insightLoading, setInsightLoading] = useState(true);
   const [insightError, setInsightError] = useState(false);
   const [lowStock, setLowStock] = useState({ count: 0, items: [] });
+  const [chartData, setChartData] = useState({ salesTrend: [], inventoryByCut: [] });
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const isAdmin = user?.role === "admin";
 
@@ -16,6 +32,7 @@ export default function Dashboard() {
     api.get("/reports/dashboard").then((res) => setStats(res.data)).catch(() => {});
     fetchInsight();
     fetchLowStock();
+    fetchChartData();
   }, []);
 
   const fetchInsight = (refresh = false) => {
@@ -32,6 +49,13 @@ export default function Dashboard() {
     api
       .get("/inventory/low-stock")
       .then((res) => setLowStock(res.data))
+      .catch(() => {});
+  };
+
+  const fetchChartData = () => {
+    api
+      .get("/reports/chart-data")
+      .then((res) => setChartData(res.data))
       .catch(() => {});
   };
 
@@ -136,6 +160,52 @@ export default function Dashboard() {
         <div className={`card ${lowStock.count > 0 ? "card-alert" : ""}`}>
           <h3>Low Stock Items</h3>
           <div className="value"><CountUp value={lowStock.count} /></div>
+        </div>
+      </div>
+
+      <div className="chart-grid">
+        <div className="chart-card">
+          <h3 className="chart-title">Sales Trend</h3>
+          {chartData.salesTrend.length === 0 ? (
+            <p className="empty-state">No sales data yet</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={260}>
+              <LineChart data={chartData.salesTrend} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E7E1D3" />
+                <XAxis dataKey="date" fontSize={11} stroke="#78705F" />
+                <YAxis fontSize={11} stroke="#78705F" tickFormatter={(v) => `₹${v / 1000}k`} />
+                <Tooltip formatter={(v) => `₹${v.toLocaleString()}`} />
+                <Line type="monotone" dataKey="total" stroke="#B08D57" strokeWidth={2.5} dot={{ r: 4, fill: "#B08D57" }} />
+              </LineChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+
+        <div className="chart-card">
+          <h3 className="chart-title">Inventory by Cut</h3>
+          {chartData.inventoryByCut.length === 0 ? (
+            <p className="empty-state">No inventory data yet</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={260}>
+              <PieChart>
+                <Pie
+                  data={chartData.inventoryByCut}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={90}
+                  label={(entry) => `${entry.name}: ${entry.value}`}
+                >
+                  {chartData.inventoryByCut.map((entry, index) => (
+                    <Cell key={entry.name} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
         </div>
       </div>
     </Layout>

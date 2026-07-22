@@ -1,9 +1,21 @@
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 export default function Layout({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
   const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "light");
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -40,6 +52,9 @@ export default function Layout({ children }) {
           ))}
         </nav>
         <div className="sidebar-spacer" />
+        <button className="theme-toggle-btn" onClick={toggleTheme}>
+          {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
+        </button>
         <button onClick={logout}>Logout</button>
       </div>
       <div className="main">

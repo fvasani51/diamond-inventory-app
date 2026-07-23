@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Layout from "../components/Layout";
 import api from "../api/axios";
 
@@ -11,6 +11,11 @@ export default function Inventory() {
   const [form, setForm] = useState(empty);
   const [editId, setEditId] = useState(null);
   const [qrImage, setQrImage] = useState(null);
+  const [filterCut, setFilterCut] = useState("");
+  const [filterColor, setFilterColor] = useState("");
+  const [filterShape, setFilterShape] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const isAdmin = user?.role === "admin";
 
@@ -20,6 +25,31 @@ export default function Inventory() {
   };
 
   useEffect(() => { load(); }, [search]);
+
+  const cutOptions = useMemo(() => [...new Set(diamonds.map((d) => d.cut))].sort(), [diamonds]);
+  const colorOptions = useMemo(() => [...new Set(diamonds.map((d) => d.color))].sort(), [diamonds]);
+  const shapeOptions = useMemo(() => [...new Set(diamonds.map((d) => d.shape))].sort(), [diamonds]);
+
+  const filteredDiamonds = useMemo(() => {
+    return diamonds.filter((d) => {
+      if (filterCut && d.cut !== filterCut) return false;
+      if (filterColor && d.color !== filterColor) return false;
+      if (filterShape && d.shape !== filterShape) return false;
+      if (minPrice && d.price < Number(minPrice)) return false;
+      if (maxPrice && d.price > Number(maxPrice)) return false;
+      return true;
+    });
+  }, [diamonds, filterCut, filterColor, filterShape, minPrice, maxPrice]);
+
+  const clearFilters = () => {
+    setFilterCut("");
+    setFilterColor("");
+    setFilterShape("");
+    setMinPrice("");
+    setMaxPrice("");
+  };
+
+  const activeFilterCount = [filterCut, filterColor, filterShape, minPrice, maxPrice].filter(Boolean).length;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -66,6 +96,40 @@ export default function Inventory() {
         </button>
       </div>
 
+      <div className="filter-panel">
+        <select value={filterCut} onChange={(e) => setFilterCut(e.target.value)}>
+          <option value="">All Cuts</option>
+          {cutOptions.map((c) => <option key={c} value={c}>{c}</option>)}
+        </select>
+        <select value={filterColor} onChange={(e) => setFilterColor(e.target.value)}>
+          <option value="">All Colors</option>
+          {colorOptions.map((c) => <option key={c} value={c}>{c}</option>)}
+        </select>
+        <select value={filterShape} onChange={(e) => setFilterShape(e.target.value)}>
+          <option value="">All Shapes</option>
+          {shapeOptions.map((s) => <option key={s} value={s}>{s}</option>)}
+        </select>
+        <input
+          type="number"
+          placeholder="Min ₹"
+          value={minPrice}
+          onChange={(e) => setMinPrice(e.target.value)}
+          className="filter-price-input"
+        />
+        <input
+          type="number"
+          placeholder="Max ₹"
+          value={maxPrice}
+          onChange={(e) => setMaxPrice(e.target.value)}
+          className="filter-price-input"
+        />
+        {activeFilterCount > 0 && (
+          <button className="btn btn-secondary filter-clear-btn" onClick={clearFilters}>
+            Clear filters ({activeFilterCount})
+          </button>
+        )}
+      </div>
+
       {showForm && (
         <form onSubmit={handleSubmit} className="card" style={{ marginBottom: 20 }}>
           <div className="form-grid">
@@ -89,7 +153,7 @@ export default function Inventory() {
           </tr>
         </thead>
         <tbody>
-          {diamonds.map((d) => (
+          {filteredDiamonds.map((d) => (
             <tr key={d._id}>
               <td>{d.carat}</td>
               <td>{d.cut}</td>
@@ -105,7 +169,11 @@ export default function Inventory() {
               </td>
             </tr>
           ))}
-          {diamonds.length === 0 && <tr><td colSpan="8" style={{ textAlign: "center", padding: 20 }}>No diamonds found</td></tr>}
+          {filteredDiamonds.length === 0 && (
+            <tr><td colSpan="8" style={{ textAlign: "center", padding: 20 }}>
+              {diamonds.length === 0 ? "No diamonds found" : "No diamonds match the selected filters"}
+            </td></tr>
+          )}
         </tbody>
       </table>
 

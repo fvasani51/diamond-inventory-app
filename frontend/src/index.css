@@ -666,3 +666,33 @@ input::placeholder { color: var(--muted-2); }
   .activity-item { flex-wrap: wrap; }
   .activity-time { width: 100%; text-align: right; }
 }
+/* ---------- Inventory filter panel ---------- */
+.filter-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+}
+.filter-panel select {
+  width: auto;
+  min-width: 130px;
+  flex: 1 1 130px;
+}
+.filter-price-input {
+  width: auto;
+  flex: 1 1 90px;
+  min-width: 90px;
+}
+.filter-clear-btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+@media (max-width: 860px) {
+  .filter-panel { flex-direction: column; align-items: stretch; }
+  .filter-panel select, .filter-price-input, .filter-clear-btn { width: 100%; }
+}

@@ -7,11 +7,17 @@ export default function Layout({ children }) {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "light");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
   }, [theme]);
+
+  // Close the mobile menu automatically whenever the route changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
@@ -32,7 +38,17 @@ export default function Layout({ children }) {
 
   return (
     <div className="layout">
-      <div className="sidebar">
+      <button
+        className="mobile-menu-btn"
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        aria-label="Toggle menu"
+      >
+        {mobileMenuOpen ? "✕" : "☰"}
+      </button>
+
+      {mobileMenuOpen && <div className="sidebar-overlay" onClick={() => setMobileMenuOpen(false)} />}
+
+      <div className={`sidebar ${mobileMenuOpen ? "sidebar-open" : ""}`}>
         <div className="brand">
           <svg className="brand-mark" width="30" height="30" viewBox="0 0 32 32" fill="none">
             <path d="M6 11L16 4L26 11L16 28L6 11Z" stroke="#B08D57" strokeWidth="1.3" strokeLinejoin="round" />

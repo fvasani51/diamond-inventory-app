@@ -1,0 +1,90 @@
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+
+export default function Layout({ children }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "light");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
+
+  const links = [
+    { to: "/dashboard", label: "Dashboard" },
+    { to: "/inventory", label: "Inventory" },
+    { to: "/orders", label: "Orders" },
+    { to: "/customers", label: "Customers" },
+    { to: "/inquiries", label: "Inquiries" },
+  ];
+
+  return (
+    <div className="layout">
+      <button
+        className="mobile-menu-btn"
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        aria-label="Toggle menu"
+      >
+        {mobileMenuOpen ? "✕" : "☰"}
+      </button>
+
+      {mobileMenuOpen && <div className="sidebar-overlay" onClick={() => setMobileMenuOpen(false)} />}
+
+      <div className={`sidebar ${mobileMenuOpen ? "sidebar-open" : ""}`}>
+        <div className="brand">
+          <svg className="brand-mark" width="30" height="30" viewBox="0 0 32 32" fill="none">
+            <path d="M6 11L16 4L26 11L16 28L6 11Z" stroke="#B08D57" strokeWidth="1.3" strokeLinejoin="round" />
+            <path d="M6 11H26M11 11L16 4L21 11M11 11L16 28M21 11L16 28" stroke="#B08D57" strokeWidth="0.8" opacity="0.7" />
+          </svg>
+          <div className="brand-text">
+            <h2>Paladiya Brothers</h2>
+            <span>Diamond Trade</span>
+          </div>
+        </div>
+        <div className="sidebar-divider" />
+        <nav>
+          {links.map((l) => (
+            <Link key={l.to} to={l.to} className={location.pathname === l.to ? "active" : ""}>
+              {l.label}
+            </Link>
+          ))}
+        </nav>
+        <div className="sidebar-spacer" />
+        <button className="theme-toggle-btn" onClick={toggleTheme}>
+          {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
+        </button>
+        <button onClick={logout}>Logout</button>
+      </div>
+      <div className="main">
+        <div className="topbar">
+          <h1>{links.find((l) => l.to === location.pathname)?.label || "Dashboard"}</h1>
+          <div className="user-chip">
+            <span className="name">{user?.name}</span>
+            {user?.role && <span className="role-badge">{user.role}</span>}
+          </div>
+        </div>
+        <div key={location.pathname} className="page-fade">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
